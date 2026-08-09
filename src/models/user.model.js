@@ -1,6 +1,7 @@
 import mongoose, { Schema } from "mongoose";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
+import { use } from "react";
 
 const userShcema = new Schema(
   {
@@ -19,7 +20,7 @@ const userShcema = new Schema(
       lowercase: true,
       trim: true,
     },
-    fullname: {
+    fullName: {
       type: String,
       required: true,
       trim: true,
@@ -62,5 +63,23 @@ userShcema.pre("save", async function (next) {
 userSchema.methods.isPasswordCorrect = async function (password) {
   return await bcrypt.compare(password, this.password);
 };
+
+// TO GENERATE ACCESS AND REFRESH TOKEN
+userSchema.methods.generateAccessToken = function () {
+  jwt.sign(
+    {
+      _id: this._id,
+      email: this.email,
+      username: this.username,
+      fullName: this.fullName,
+    },
+    process.env.ACCESS_TOKEN_SECRET,
+    {
+      expiresIn: process.env.ACCESS_TOKEN_EXPIRY,
+    },
+  );
+};
+
+userSchema.methods.generateRefreshToken = function () {};
 
 export const User = mongoose.model("User", userShcema);
