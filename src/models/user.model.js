@@ -3,7 +3,7 @@ import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import { use } from "react";
 
-const userShcema = new Schema(
+const userSchema = new Schema(
   {
     username: {
       type: String,
@@ -51,7 +51,7 @@ const userShcema = new Schema(
 );
 
 // PASSWORD INCRYPT USING BCRYPT
-userShcema.pre("save", async function (next) {
+userSchema.pre("save", async function (next) {
   if (!this.isModified("password")) return next();
 
   this.password = await bcrypt.hash(this.password, 10);
