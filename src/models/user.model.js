@@ -1,7 +1,6 @@
 import mongoose, { Schema } from "mongoose";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
-import { use } from "react";
 
 const userSchema = new Schema(
   {
@@ -51,12 +50,12 @@ const userSchema = new Schema(
 );
 
 // PASSWORD INCRYPT USING BCRYPT
-userSchema.pre("save", async function (next) {
-  if (!this.isModified("password")) return next();
+userSchema.pre("save", async function () {
+  if (!this.isModified("password")) return ;
 
   this.password = await bcrypt.hash(this.password, 10);
 
-  next();
+  // next();
 });
 
 // Method to check password
@@ -92,4 +91,4 @@ userSchema.methods.generateRefreshToken = function () {
   );
 };
 
-export const User = mongoose.model("User", userShcema);
+export const User = mongoose.model("User", userSchema);
